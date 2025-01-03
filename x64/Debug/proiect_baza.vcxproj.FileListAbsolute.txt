@@ -1,0 +1,5 @@
+C:\Users\Noemi\Desktop\pg\laboratoare\proiect_baza\x64\Debug\proiect_baza.exe
+C:\Users\Noemi\Desktop\pg\laboratoare\laborator_9\proiect_baza\x64\Debug\proiect_baza.exe
+C:\Users\Noemi\Desktop\pg\laboratoare\laborator_10\proiect_baza\x64\Debug\proiect_baza.exe
+C:\Users\Noemi\Desktop\pg\laboratoare\laborator_11\proiect_baza\x64\Debug\proiect_baza.exe
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\x64\Debug\proiect_baza.exe
