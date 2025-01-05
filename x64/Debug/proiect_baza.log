@@ -1,6 +1,30 @@
 ﻿  main.cpp
-C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(231,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(231,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
-C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(347,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(873,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(224,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(224,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(332,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(785,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(798,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(919,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+glfw3.lib(init.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(init.obj)' or at ''; linking object as if no debug info
+glfw3.lib(window.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(window.obj)' or at ''; linking object as if no debug info
+glfw3.lib(input.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(input.obj)' or at ''; linking object as if no debug info
+glfw3.lib(context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(context.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_time.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_time.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_thread.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_thread.obj)' or at ''; linking object as if no debug info
+glfw3.lib(platform.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(platform.obj)' or at ''; linking object as if no debug info
+glfw3.lib(monitor.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(monitor.obj)' or at ''; linking object as if no debug info
+glfw3.lib(vulkan.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(vulkan.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_init.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_init.obj)' or at ''; linking object as if no debug info
+glfw3.lib(null_init.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(null_init.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_module.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_module.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_monitor.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_monitor.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_window.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_window.obj)' or at ''; linking object as if no debug info
+glfw3.lib(win32_joystick.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(win32_joystick.obj)' or at ''; linking object as if no debug info
+glfw3.lib(wgl_context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(wgl_context.obj)' or at ''; linking object as if no debug info
+glfw3.lib(egl_context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(egl_context.obj)' or at ''; linking object as if no debug info
+glfw3.lib(osmesa_context.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(osmesa_context.obj)' or at ''; linking object as if no debug info
+glfw3.lib(null_monitor.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(null_monitor.obj)' or at ''; linking object as if no debug info
+glfw3.lib(null_window.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(null_window.obj)' or at ''; linking object as if no debug info
+glfw3.lib(null_joystick.obj) : warning LNK4099: PDB '' was not found with 'glfw3.lib(null_joystick.obj)' or at ''; linking object as if no debug info
+libglew32d.lib(glew.obj) : warning LNK4099: PDB '' was not found with 'libglew32d.lib(glew.obj)' or at ''; linking object as if no debug info
   proiect_baza.vcxproj -> C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\x64\Debug\proiect_baza.exe

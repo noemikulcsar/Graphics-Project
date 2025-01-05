@@ -25,6 +25,7 @@ uniform vec3 lightPos4;
 uniform mat4 view;
 
 uniform bool pointLightOn;
+uniform bool isSnowActive;
 
 vec3 ambient;
 vec3 diffuse;

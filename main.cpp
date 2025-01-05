@@ -29,8 +29,6 @@
 
 #include <iostream>
 
-//int glWindowWidth = 800;
-//int glWindowHeight = 600;
 int glWindowWidth = 1200;
 int glWindowHeight = 1000;
 int retina_width, retina_height;
@@ -72,11 +70,6 @@ glm::vec3 nightLightColor;
 
 GLuint textureID;
 
-/*gps::Camera myCamera(
-	glm::vec3(0.0f, 1.0f, 5.5f),
-	glm::vec3(0.0f, 1.0f, 0.0f),
-	glm::vec3(0.0f, 1.0f, 0.0f));*/
-
 gps::Camera myCamera(
 	glm::vec3(0.200329f, 0.9f, 11.1015f),
 	glm::vec3(0.592025f, 0.9f, 10.8138f),
@@ -89,8 +82,6 @@ float angleElice = 0.0f;
 float speedElice = 1.0f;
 GLfloat lightAngle;
 
-gps::Model3D nanosuit;
-gps::Model3D ground;
 gps::Model3D lightCube;
 gps::Model3D screenQuad;
 gps::Model3D dormitor;
@@ -99,13 +90,13 @@ gps::Model3D pahar;
 gps::Model3D scrumiera;
 gps::Model3D elice;
 gps::Model3D drop;
+gps::Model3D snow;
 
 gps::Shader myCustomShader;
 gps::Shader lightShader;
 gps::Shader screenQuadShader;
 gps::Shader depthMapShader;
 gps::Shader transparentShader;
-gps::Shader rainShader;
 
 GLuint shadowMapFBO;
 GLuint depthMapTexture;
@@ -121,6 +112,8 @@ bool smoothShading = false;
 bool polygonalView = false;
 bool solidView = false;
 bool isRotating = false;
+bool isRainActive = false;
+bool isSnowActive = false;
 
 bool isSinusoidalMovementActive = false;
 bool isSinusoidalAnimationActive = false;
@@ -293,14 +286,6 @@ void processRotation()
 }
 void processMovement()
 {
-	/*if (pressedKeys[GLFW_KEY_Q]) {
-		//angleY -= 1.0f;
-		myCamera.rotate(0.0f, 0.2f);
-	}
-	if (pressedKeys[GLFW_KEY_E]) {
-		//angleY += 1.0f;
-		myCamera.rotate(0.0f, -0.2f);
-	}*/
 	if (pressedKeys[GLFW_KEY_J]) {
 		lightAngle -= 0.05f;
 	}
@@ -355,7 +340,9 @@ void processMovement()
 }
 bool key0Pressed = false;
 bool key9Pressed = false;
-bool key3Pressed;
+bool key3Pressed = false;
+bool key4Pressed = false;
+bool key5Pressed = false;
 
 void processInput(GLFWwindow* window) {
 	if (pressedKeys[GLFW_KEY_0]) {
@@ -431,9 +418,31 @@ void processInput(GLFWwindow* window) {
 	{
 		key3Pressed = false;
 	}
-
+	if (pressedKeys[GLFW_KEY_4])
+	{
+		if (!key4Pressed)
+		{
+			key4Pressed = true;
+			isRainActive = !isRainActive;
+		}
+	}
+	else
+	{
+		key4Pressed = false;
+	}
+	if (pressedKeys[GLFW_KEY_5])
+	{
+		if (!key5Pressed)
+		{
+			key5Pressed = true;
+			isSnowActive = !isSnowActive;
+		}
+	}
+	else
+	{
+		key5Pressed = false;
+	}
 }
-
 bool initOpenGLWindow()
 {
 	if (!glfwInit()) {
@@ -446,14 +455,10 @@ bool initOpenGLWindow()
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-
-	//window scaling for HiDPI displays
 	glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
-	//for sRBG framebuffer
 	glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
 
-	//for antialising
 	glfwWindowHint(GLFW_SAMPLES, 4);
 
 	glWindow = glfwCreateWindow(glWindowWidth, glWindowHeight, "OpenGL Shader Example", NULL, NULL);
@@ -467,7 +472,6 @@ bool initOpenGLWindow()
 	glfwSetKeyCallback(glWindow, keyboardCallback);
 	glfwSetCursorPosCallback(glWindow, mouseCallback);
 	glfwSetMouseButtonCallback(glWindow, mouseButtonCallback);
-	//glfwSetInputMode(glWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
 	glfwMakeContextCurrent(glWindow);
 
@@ -496,11 +500,11 @@ void initOpenGLState()
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	glViewport(0, 0, retina_width, retina_height);
 
-	glEnable(GL_DEPTH_TEST); // enable depth-testing
-	glDepthFunc(GL_LESS); // depth-testing interprets a smaller value as "closer"
-	//glEnable(GL_CULL_FACE); // cull face
-	//glCullFace(GL_BACK); // cull back face
-	glFrontFace(GL_CCW); // GL_CCW for counter clock-wise
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_LESS);
+	//glEnable(GL_CULL_FACE);
+	//glCullFace(GL_BACK);
+	glFrontFace(GL_CCW);
 
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -509,8 +513,6 @@ void initOpenGLState()
 }
 
 void initObjects() {
-	nanosuit.LoadModel("objects/nanosuit/nanosuit.obj");
-	ground.LoadModel("objects/ground/ground.obj");
 	lightCube.LoadModel("objects/cube/cube.obj");
 	screenQuad.LoadModel("objects/quad/quad.obj");
 	dormitor.LoadModel("objects/scena/scena.obj");
@@ -519,6 +521,7 @@ void initObjects() {
 	scrumiera.LoadModel("objects/scrumiera/scrumiera.obj");
 	elice.LoadModel("objects/elice/elice.obj");
 	drop.LoadModel("objects/drop/drop.obj");
+	snow.LoadModel("objects/snow/snow.obj");
 }
 
 void initShaders() {
@@ -534,6 +537,7 @@ void initShaders() {
 	skyboxShader.useShaderProgram();
 	transparentShader.loadShader("shaders/shaderTransparent.vert", "shaders/shaderTransparent.frag");
 	transparentShader.useShaderProgram();
+
 }
 glm::vec3 punct1(0.218494f, 0.864307f, 11.0895f);//inauntru
 glm::vec3 punct2(0.957953f, 0.864307f, 10.7035f);//afara
@@ -563,7 +567,6 @@ void initUniforms() {
 	projectionLoc = glGetUniformLocation(myCustomShader.shaderProgram, "projection");
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
-	//set the light direction (direction towards the light)
 	lightDir = glm::normalize(punct2 - punct1);
 	lightRotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.0f, 1.0f, 0.0f));
 	lightDirLoc = glGetUniformLocation(myCustomShader.shaderProgram, "lightDir");
@@ -644,10 +647,7 @@ void  initSkybox()
 	mySkyBox.Load(faces);
 }
 void initFBO() {
-	//TODO - Create the FBO, the depth texture and attach the depth texture to the FBO
-	//generate FBO ID
 	glGenFramebuffers(1, &shadowMapFBO);
-	//create depth texture for FBO
 	glGenTextures(1, &depthMapTexture);
 	glBindTexture(GL_TEXTURE_2D, depthMapTexture);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT,
@@ -658,7 +658,6 @@ void initFBO() {
 	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-	//attach texture to FBO
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMapTexture,
 		0);
@@ -673,7 +672,6 @@ void drawObjects(gps::Shader shader, bool depthPass) {
 	model = glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(0.0f, 1.0f, 0.0f));
 	glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 
-	// do not send the normal matrix if we are rendering in the depth map
 	if (!depthPass) {
 		normalMatrix = glm::mat3(glm::inverseTranspose(view * model));
 		glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, glm::value_ptr(normalMatrix));
@@ -712,9 +710,8 @@ struct RainDrop {
 	glm::vec3 position;
 	float speed;
 };
-
 std::vector<RainDrop> rainDrops;
-const int numDrops = 2000;
+const int numDrops = 3000;
 void initRainDrops() {
 	srand(static_cast<unsigned int>(time(0)));
 
@@ -738,15 +735,19 @@ void initRainDrops() {
 	}
 }
 void updateRainDrops(float deltaTime) {
+	if (!isRainActive) 
+		return;
 	for (auto& rainDrop : rainDrops) {
 		rainDrop.position.y -= rainDrop.speed * deltaTime;
-		if (rainDrop.position.y < -12.0f) {
+		if (rainDrop.position.y < -2.0f) {
 			rainDrop.position.y = 2.73309f;
 		}
 	}
 }
 void drawRain(gps::Shader shader)
 {
+	if (!isRainActive) 
+		return;
 	shader.useShaderProgram();
 	for (const auto& rainDrop : rainDrops) {
 		glm::mat4 model = glm::mat4(1.0f);
@@ -757,11 +758,66 @@ void drawRain(gps::Shader shader)
 		drop.Draw(shader);
 	}
 }
-void renderScene() {
+struct SnowFlake {
+	glm::vec3 position;
+	float speed;
+	float sway;
+};
+std::vector<SnowFlake> snowFlakes;
+const int numSnowFlakes = 3000;
+void initSnowFlakes() {
+	srand(static_cast<unsigned int>(time(0)));
 
-	// depth maps creation pass
-	//TODO - Send the light-space transformation matrix to the depth map creation shader and
-	//		 render the scene in the depth map
+	glm::vec3 bottomLeft(-1.16091f, 2.73309f, 3.36592f);
+	glm::vec3 bottomRight(5.8164f, 2.73309f, 15.8971f);
+	glm::vec3 topLeft(10.5466f, 2.73309f, -2.99592f);
+	glm::vec3 topRight(17.3241f, 2.73309f, 9.97176f);
+
+	for (int i = 0; i < numSnowFlakes; i++) {
+		float alpha = static_cast<float>(rand()) / RAND_MAX;
+		float beta = static_cast<float>(rand()) / RAND_MAX;
+		glm::vec3 position =
+			bottomLeft * (1 - alpha) * (1 - beta) +
+			bottomRight * alpha * (1 - beta) +
+			topLeft * (1 - alpha) * beta +
+			topRight * alpha * beta;
+
+		float speed = 0.1f + static_cast<float>(rand()) / RAND_MAX * 0.05;
+		float sway = static_cast<float>(rand()) / RAND_MAX * 2.0f * 3.14159f;
+
+		snowFlakes.push_back({ position, speed, sway });
+	}
+}
+void updateSnowFlakes(float deltaTime) {
+	if (!isSnowActive)
+		return;
+	const float spiralRadius = 0.05f;
+	const float spiralSpeed = 0.5f;
+	for (auto& snowFlake : snowFlakes) {
+		snowFlake.position.y -= snowFlake.speed * deltaTime;
+		float angle = glfwGetTime() * spiralSpeed + snowFlake.sway;
+		snowFlake.position.x += spiralRadius * cos(angle) * deltaTime;
+		snowFlake.position.z += spiralRadius * sin(angle) * deltaTime;
+		if (snowFlake.position.y < -2.0f) {
+			snowFlake.position.y = 2.73309f;
+		}
+	}
+}
+void drawSnow(gps::Shader shader)
+{
+	if (!isSnowActive)
+		return;
+	shader.useShaderProgram();
+	for (auto& snowFlake : snowFlakes) {
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-1.30202f, -1.09174f, -10.8227f));
+		model = glm::translate(model, snowFlake.position);
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		snow.Draw(shader);
+	}
+}
+void renderScene() {
 
 	depthMapShader.useShaderProgram();
 	glUniformMatrix4fv(glGetUniformLocation(depthMapShader.shaderProgram, "lightSpaceTrMatrix"),
@@ -772,12 +828,8 @@ void renderScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	drawObjects(depthMapShader, showDepthMap);
-	//glDisable(GL_DEPTH_TEST);
 	drawTransparentObjects(depthMapShader, showDepthMap);
-	//glEnable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// render depth map on screen - toggled with the M key
 
 	if (showDepthMap) {
 		glViewport(0, 0, retina_width, retina_height);
@@ -785,8 +837,6 @@ void renderScene() {
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		screenQuadShader.useShaderProgram();
-
-		//bind the depth map
 		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, depthMapTexture);
 		glUniform1i(glGetUniformLocation(screenQuadShader.shaderProgram, "depthMap"), 0);
@@ -796,9 +846,6 @@ void renderScene() {
 		glEnable(GL_DEPTH_TEST);
 	}
 	else {
-
-		// final scene rendering pass (with shadows)
-
 		glViewport(0, 0, retina_width, retina_height);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -811,7 +858,6 @@ void renderScene() {
 		lightRotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.0f, 1.0f, 0.0f));
 		glUniform3fv(lightDirLoc, 1, glm::value_ptr(glm::inverseTranspose(glm::mat3(view * lightRotation)) * lightDir));
 
-		//bind the shadow map
 		glActiveTexture(GL_TEXTURE3);
 		glBindTexture(GL_TEXTURE_2D, depthMapTexture);
 		glUniform1i(glGetUniformLocation(myCustomShader.shaderProgram, "shadowMap"), 3);
@@ -845,7 +891,6 @@ void cleanup() {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	glDeleteFramebuffers(1, &shadowMapFBO);
 	glfwDestroyWindow(glWindow);
-	//close GL context and any other GLFW resources
 	glfwTerminate();
 }
 
@@ -863,6 +908,7 @@ int main(int argc, const char* argv[]) {
 	initUniforms();
 	initFBO();
 	initRainDrops();
+	initSnowFlakes();
 
 	glCheckError();
 	float lastFrame = 0.0f;
@@ -875,6 +921,8 @@ int main(int argc, const char* argv[]) {
 		lastFrame = currentFrame;
 		updateRainDrops(deltaTime);
 		drawRain(myCustomShader);
+		updateSnowFlakes(deltaTime);
+		drawSnow(myCustomShader);
 		glfwPollEvents();
 		glfwSwapBuffers(glWindow);
 	}
