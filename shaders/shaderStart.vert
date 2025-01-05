@@ -26,8 +26,6 @@ void main()
 
     // Transform the normal to eye space using the normal matrix
     fNormal = normalize(normalMatrix * vNormal);
-	fPosWorld = model * vec4(vPosition, 1.0f);
-
     // Pass texture coordinates
     fTexCoords = vTexCoords;
 

@@ -2,4 +2,5 @@
 C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(231,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(231,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
 C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(347,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(873,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   proiect_baza.vcxproj -> C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\x64\Debug\proiect_baza.exe

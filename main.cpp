@@ -98,12 +98,14 @@ gps::Model3D masa_rosie;
 gps::Model3D pahar;
 gps::Model3D scrumiera;
 gps::Model3D elice;
+gps::Model3D drop;
 
 gps::Shader myCustomShader;
 gps::Shader lightShader;
 gps::Shader screenQuadShader;
 gps::Shader depthMapShader;
 gps::Shader transparentShader;
+gps::Shader rainShader;
 
 GLuint shadowMapFBO;
 GLuint depthMapTexture;
@@ -124,8 +126,6 @@ bool isSinusoidalMovementActive = false;
 bool isSinusoidalAnimationActive = false;
 glm::vec3 initialCameraPosition = myCamera.getPosition();
 glm::vec3 initialCameraTarget = myCamera.getTarget();
-glm::vec3 punct1(0.218494f, 0.956928f, 11.0895f);//inauntru
-glm::vec3 punct2(1.11234f, 0.956928f, 10.623f);//afara
 
 bool isMiddleMousePressed = false;
 double lastMouseX, lastMouseY;
@@ -518,6 +518,7 @@ void initObjects() {
 	pahar.LoadModel("objects/pahar/pahar.obj");
 	scrumiera.LoadModel("objects/scrumiera/scrumiera.obj");
 	elice.LoadModel("objects/elice/elice.obj");
+	drop.LoadModel("objects/drop/drop.obj");
 }
 
 void initShaders() {
@@ -534,11 +535,11 @@ void initShaders() {
 	transparentShader.loadShader("shaders/shaderTransparent.vert", "shaders/shaderTransparent.frag");
 	transparentShader.useShaderProgram();
 }
-
+glm::vec3 punct1(0.218494f, 0.864307f, 11.0895f);//inauntru
+glm::vec3 punct2(0.957953f, 0.864307f, 10.7035f);//afara
 glm::mat4 computeLightSpaceTrMatrix() {
-	//TODO - Return the light-space transformation matrix
 	glm::mat4 lightView = glm::lookAt(glm::mat3(lightRotation) * punct2, punct1, glm::vec3(0.0f, 1.0f, 0.0f));
-	const GLfloat near_plane = 0.0f, far_plane = 10.0f;
+	const GLfloat near_plane = 0.0f, far_plane = 1.0f;
 	glm::mat4 lightProjection = glm::ortho(-1.0f, 1.0f, -1.0f, 1.0f, near_plane, far_plane);
 	glm::mat4 lightSpaceTrMatrix = lightProjection * lightView;
 	return lightSpaceTrMatrix;
@@ -563,21 +564,14 @@ void initUniforms() {
 	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
 	//set the light direction (direction towards the light)
-	lightDir = glm::vec3(0.0f, 1.0f, 1.0f);
 	lightDir = glm::normalize(punct2 - punct1);
 	lightRotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-	//lightRotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.215954f, 0.994091f, 11.0959f));
 	lightDirLoc = glGetUniformLocation(myCustomShader.shaderProgram, "lightDir");
 	glUniform3fv(lightDirLoc, 1, glm::value_ptr(glm::inverseTranspose(glm::mat3(view * lightRotation)) * lightDir));
 
-	//set light color
-	//lightColor = glm::vec3(0.7f, 0.7f, 0.7f);
 	lightColor = glm::vec3(1.0f);
 	lightColorLoc = glGetUniformLocation(myCustomShader.shaderProgram, "lightColor");
 	glUniform3fv(lightColorLoc, 1, glm::value_ptr(lightColor));
-
-	//lightOnLoc = glGetUniformLocation(myCustomShader.shaderProgram, "lightOn");
-	//glUniform1i(lightOnLoc, lightOn ? 1 : 0);
 
 	lightPos1 = glm::vec3(0.995647f, 0.870056f, 10.9276f);
 	lightPos1Loc = glGetUniformLocation(myCustomShader.shaderProgram, "lightPos1");
@@ -603,31 +597,6 @@ void initUniforms() {
 	glUniform1i(pointLightOnLoc, pointLightOn ? 1 : 0);
 
 	transparentShader.useShaderProgram();
-
-	/*model = glm::mat4(1.0f);
-	modelLoc = glGetUniformLocation(transparentShader.shaderProgram, "model");
-	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-
-	view = myCamera.getViewMatrix();
-	viewLoc = glGetUniformLocation(transparentShader.shaderProgram, "view");
-	glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
-
-	normalMatrix = glm::mat3(glm::inverseTranspose(view * model));
-	normalMatrixLoc = glGetUniformLocation(transparentShader.shaderProgram, "normalMatrix");
-	glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, glm::value_ptr(normalMatrix));
-
-	projection = glm::perspective(glm::radians(45.0f), (float)retina_width / (float)retina_height, 0.1f, 1000.0f);
-	projectionLoc = glGetUniformLocation(transparentShader.shaderProgram, "projection");
-	glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
-	lightDir = glm::normalize(punct2 - punct1);
-	lightRotation = glm::rotate(glm::mat4(1.0f), glm::radians(lightAngle), glm::vec3(0.0f, 1.0f, 0.0f));
-	lightDirLoc = glGetUniformLocation(transparentShader.shaderProgram, "lightDir");
-	glUniform3fv(lightDirLoc, 1, glm::value_ptr(glm::inverseTranspose(glm::mat3(view * lightRotation)) * lightDir));
-
-	lightColor = glm::vec3(0.3f, 0.3f, 0.3f);
-	lightColorLoc = glGetUniformLocation(transparentShader.shaderProgram, "lightColor");
-	glUniform3fv(lightColorLoc, 1, glm::value_ptr(lightColor));
-	*/
 	modelLoc = glGetUniformLocation(transparentShader.shaderProgram, "model");
 	glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 	viewLoc = glGetUniformLocation(transparentShader.shaderProgram, "view");
@@ -662,7 +631,6 @@ void initUniforms() {
 
 	glUseProgram(depthMapShader.shaderProgram);
 	glUniformMatrix4fv(glGetUniformLocation(depthMapShader.shaderProgram, "lightSpaceTrMatrix"), 1, GL_FALSE, glm::value_ptr(computeLightSpaceTrMatrix()));
-
 }
 void  initSkybox()
 {
@@ -724,21 +692,70 @@ void drawObjects(gps::Shader shader, bool depthPass) {
 	glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(eliceModel));
 	elice.Draw(shader);
 }
-void drawTransparentObjects(bool depthPass)
+void drawTransparentObjects(gps::Shader shader, bool depthPass)
 {
-	transparentShader.useShaderProgram();
+	shader.useShaderProgram();
 	model = glm::rotate(glm::mat4(1.0f), glm::radians(angleY), glm::vec3(0.0f, 1.0f, 0.0f));
-	glUniformMatrix4fv(glGetUniformLocation(transparentShader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
 	if (!depthPass) {
 		normalMatrix = glm::mat3(glm::inverseTranspose(view * model));
 		glUniformMatrix3fv(normalMatrixLoc, 1, GL_FALSE, glm::value_ptr(normalMatrix));
 	}
-	masa_rosie.Draw(transparentShader);
-	pahar.Draw(transparentShader);
-	scrumiera.Draw(transparentShader);
+	masa_rosie.Draw(shader);
+	scrumiera.Draw(shader);
+	pahar.Draw(shader);
 	model = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, 0.0f));
 	model = glm::scale(model, glm::vec3(1.0f));
-	glUniformMatrix4fv(glGetUniformLocation(transparentShader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+	glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+}
+struct RainDrop {
+	glm::vec3 position;
+	float speed;
+};
+
+std::vector<RainDrop> rainDrops;
+const int numDrops = 2000;
+void initRainDrops() {
+	srand(static_cast<unsigned int>(time(0)));
+
+	glm::vec3 bottomLeft(-1.16091f, 2.73309f, 3.36592f);
+	glm::vec3 bottomRight(5.8164f, 2.73309f, 15.8971f);
+	glm::vec3 topLeft(10.5466f, 2.73309f, -2.99592f);
+	glm::vec3 topRight(17.3241f, 2.73309f, 9.97176f);
+
+	for (int i = 0; i < numDrops; i++) {
+		float alpha = static_cast<float>(rand()) / RAND_MAX;
+		float beta = static_cast<float>(rand()) / RAND_MAX;
+		glm::vec3 position =
+			bottomLeft * (1 - alpha) * (1 - beta) +
+			bottomRight * alpha * (1 - beta) +
+			topLeft * (1 - alpha) * beta +
+			topRight * alpha * beta;
+
+		float speed = 0.1f + static_cast<float>(rand()) / RAND_MAX;
+
+		rainDrops.push_back({ position, speed });
+	}
+}
+void updateRainDrops(float deltaTime) {
+	for (auto& rainDrop : rainDrops) {
+		rainDrop.position.y -= rainDrop.speed * deltaTime;
+		if (rainDrop.position.y < -12.0f) {
+			rainDrop.position.y = 2.73309f;
+		}
+	}
+}
+void drawRain(gps::Shader shader)
+{
+	shader.useShaderProgram();
+	for (const auto& rainDrop : rainDrops) {
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(-1.30202f, -1.09174f, -10.8227f));
+		model = glm::translate(model, rainDrop.position);
+		model = glm::scale(model, glm::vec3(1.0f));
+		glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(model));
+		drop.Draw(shader);
+	}
 }
 void renderScene() {
 
@@ -755,9 +772,9 @@ void renderScene() {
 	glBindFramebuffer(GL_FRAMEBUFFER, shadowMapFBO);
 	glClear(GL_DEPTH_BUFFER_BIT);
 	drawObjects(depthMapShader, showDepthMap);
-	glDisable(GL_DEPTH_TEST);
-	drawTransparentObjects(showDepthMap);
-	glEnable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
+	drawTransparentObjects(depthMapShader, showDepthMap);
+	//glEnable(GL_DEPTH_TEST);
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 	// render depth map on screen - toggled with the M key
@@ -819,7 +836,7 @@ void renderScene() {
 			1,
 			GL_FALSE,
 			glm::value_ptr(computeLightSpaceTrMatrix()));
-		drawTransparentObjects(false);
+		drawTransparentObjects(transparentShader, false);
 	}
 }
 
@@ -845,13 +862,19 @@ int main(int argc, const char* argv[]) {
 	initShaders();
 	initUniforms();
 	initFBO();
+	initRainDrops();
 
 	glCheckError();
-
+	float lastFrame = 0.0f;
 	while (!glfwWindowShouldClose(glWindow)) {
 		processMovement();
 		processInput(glWindow);
 		renderScene();
+		float currentFrame = glfwGetTime();
+		float deltaTime = currentFrame - lastFrame;
+		lastFrame = currentFrame;
+		updateRainDrops(deltaTime);
+		drawRain(myCustomShader);
 		glfwPollEvents();
 		glfwSwapBuffers(glWindow);
 	}
