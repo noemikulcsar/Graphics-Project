@@ -183,7 +183,7 @@ void keyboardCallback(GLFWwindow* window, int key, int scancode, int action, int
 
 		}
 		else {
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 	}
 	if (key == GLFW_KEY_1 && action == GLFW_PRESS) {
@@ -684,9 +684,9 @@ void drawObjects(gps::Shader shader, bool depthPass) {
 
 	glm::vec3 rotationPoint = glm::vec3(0.354297f, 0.901578f, 11.3234f);
 	glm::mat4 eliceModel = glm::mat4(1.0f);
-	eliceModel = glm::translate(eliceModel, -rotationPoint);
-	eliceModel = glm::rotate(eliceModel, glm::radians(angleElice), glm::vec3(0.354297f, 0.901578f, 11.3234f));
 	eliceModel = glm::translate(eliceModel, rotationPoint);
+	eliceModel = glm::rotate(eliceModel, glm::radians(angleElice), glm::vec3(0.354297f, 0.901578f, 11.3234f));
+	eliceModel = glm::translate(eliceModel, -rotationPoint);
 	glUniformMatrix4fv(glGetUniformLocation(shader.shaderProgram, "model"), 1, GL_FALSE, glm::value_ptr(eliceModel));
 	elice.Draw(shader);
 }

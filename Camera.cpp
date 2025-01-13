@@ -3,26 +3,18 @@
 namespace gps {
 
     float yaw, pitch;
-    // Camera constructor
     Camera::Camera(glm::vec3 cameraPosition, glm::vec3 cameraTarget, glm::vec3 cameraUp) {
         this->cameraPosition = cameraPosition;
         this->cameraTarget = cameraTarget;
         this->cameraUpDirection = cameraUp;
-
-
-        // Calculăm direcțiile frontale și dreapta ale camerei
         cameraFrontDirection = glm::normalize(cameraTarget - cameraPosition);
         cameraRightDirection = glm::normalize(glm::cross(cameraFrontDirection, cameraUpDirection));
-        yaw = glm::degrees(atan2(cameraFrontDirection.z, cameraFrontDirection.x)); // Horizontal angle (yaw)
-        pitch = glm::degrees(asin(cameraFrontDirection.y)); // Vertical angle (pitch)
+        yaw = glm::degrees(atan2(cameraFrontDirection.z, cameraFrontDirection.x)); 
+        pitch = glm::degrees(asin(cameraFrontDirection.y)); 
     }
-
-    // Returnează matricea de vizualizare folosind glm::lookAt()
     glm::mat4 Camera::getViewMatrix() {
         return glm::lookAt(cameraPosition, cameraPosition + cameraFrontDirection, cameraUpDirection);
     }
-
-    // Actualizează parametrii camerei în funcție de direcția mișcării și viteza specificată
     void Camera::move(MOVE_DIRECTION direction, float speed) {
         if (direction == MOVE_FORWARD) {
             cameraPosition += cameraFrontDirection * speed;
@@ -68,16 +60,12 @@ namespace gps {
     }
     void Camera::setPosition(glm::vec3 newPosition) {
         cameraPosition = newPosition;
-
-        // Recalculează direcțiile pe baza noii poziții
         cameraFrontDirection = glm::normalize(cameraTarget - cameraPosition);
         cameraRightDirection = glm::normalize(glm::cross(cameraFrontDirection, cameraUpDirection));
     }
 
     void Camera::setTarget(glm::vec3 newTarget) {
         cameraTarget = newTarget;
-
-        // Recalculează direcțiile pe baza noii ținte
         cameraFrontDirection = glm::normalize(cameraTarget - cameraPosition);
         cameraRightDirection = glm::normalize(glm::cross(cameraFrontDirection, cameraUpDirection));
     }

@@ -128,7 +128,7 @@ void main()
 	ambient *= texture(diffuseTexture, fTexCoords).rgb;
 	diffuse *= texture(diffuseTexture, fTexCoords).rgb;
 	specular *= texture(specularTexture, fTexCoords).rgb;
-	shadow = computeShadow();
+	shadow = computeShadow()*0.7f;
 	vec3 color = min((ambient + (1.0f - shadow)*diffuse) + (1.0f - shadow)*specular, 1.0f);
 
 vec4 lightPosEye1 = view * vec4(lightPos1, 1.0f);

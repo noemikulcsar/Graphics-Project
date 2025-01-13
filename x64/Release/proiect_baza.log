@@ -1,0 +1,19 @@
+﻿  Camera.cpp
+  Mesh.cpp
+  Model3D.cpp
+  Shader.cpp
+  SkyBox.cpp
+  stb_image.cpp
+  tiny_obj_loader.cpp
+  main.cpp
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(224,27): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(224,19): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(332,19): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(785,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(798,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\main.cpp(919,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 1971 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  proiect_baza.vcxproj -> C:\Users\Noemi\Desktop\pg\incercare proiect\proiect_baza\x64\Release\proiect_baza.exe
