@@ -1,21 +1,5 @@
 # 🎨 Graphics Processing Project  
 
-## 👩‍💻 Student Information  
-- **Student:** Kulcsar Noemi  
-- **Group:** 30234  
-- **Professor:** Nandra Cosmin  
-- **University:** Technical University of Cluj-Napoca  
-
----
-
-## 📌 Table of Contents  
-1. [Project Overview](#project-overview)  
-2. [Scene & Functionalities](#scene--functionalities)  
-3. [Implementation Details](#implementation-details)  
-4. [User Interface & Controls](#user-interface--controls)  
-5. [Conclusions & Future Improvements](#conclusions--future-improvements)  
-6. [References](#references)  
-
 ---
 
 ## 🎯 Project Overview  
